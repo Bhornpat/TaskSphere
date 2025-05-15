@@ -1,57 +1,67 @@
 'use client'
 
 import { useState } from 'react'
-
+import { useRouter } from 'next/navigation'
 
 export default function Login() {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [error, setError] = useState('')
+	const router = useRouter()
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		// TODO: Call API to log in
-		console.log('Logging in with', { email, password })
+
+		try {
+			const formData = new URLSearchParams()
+			//  Must be 'username' — FastAPI expects this
+			formData.append('username', email)
+			formData.append('password', password)
+
+			const res = await fetch('http://192.168.137.50:8000/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: formData.toString(),    // converts to a=b&c=d
+			})
+
+			if (!res.ok) throw new Error('Invalid credentials')
+
+			const data = await res.json()
+			//  Store JWT
+			localStorage.setItem('token', data.access_token)
+			//  Redirect
+			router.push('/dashboard')
+		} catch (err: any) {
+			setError(err.message)
+		}
 	}
 
-
-
 	return (
-		<div className="w-full max-w-md mx-auto">
-			<h2 className="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
-			<form onSubmit={handleSubmit} className="space-y-5">
-				<div>
-					<label htmlFor="email" className="block text-sm font-medium text-gray-700">
-						Email
-					</label>
-					<input
-						id="email"
-						type="email"
-						value={email}
-						onChange={e => setEmail(e.target.value)}
-						className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						placeholder="you@example.com"
-						required
-					/>
-				</div>
-
-				<div>
-					<label htmlFor="password" className="block text-sm font-medium text-gray-700">
-						Password
-					</label>
-					<input
-						id="password"
-						type="password"
-						value={password}
-						onChange={e => setPassword(e.target.value)}
-						className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-						placeholder="••••••••"
-						required
-					/>
-				</div>
-
+		<div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+			<h2 className="text-2xl font-bold mb-4 text-center">Login to Your Account</h2>
+			{error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
+			<form onSubmit={handleSubmit} className="space-y-4">
+				<input
+					type="email"
+					value={email}
+					onChange={e => setEmail(e.target.value)}
+					placeholder="Email"
+					className="w-full p-2 border rounded"
+					required
+				/>
+				<input
+					type="password"
+					value={password}
+					onChange={e => setPassword(e.target.value)}
+					placeholder="Password"
+					className="w-full p-2 border rounded"
+					required
+				/>
 				<button
 					type="submit"
-					className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+					className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
 				>
 					Login
 				</button>

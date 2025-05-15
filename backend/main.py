@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import status
 from utils import pwd_context
 import auth
+from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -35,11 +36,41 @@ def get_db():
     finally:
         db.close()
 
+# Only allow from your frontend, or use "*" during dev
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://vmserver:3000",
+    "http://192.168.137.196:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
+    allow_credentials=True,
+    allow_methods=["*"],  # or ["POST", "GET"]
+    allow_headers=["*"],
+)
+
 @app.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
-    if not user or not pwd_context.verify(form_data.password, user.hashed_password):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+    print("username (from form):", form_data.username)
+    print("password (from form):", form_data.password)
+
+    if not user:
+        print("🚨 User not found!")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    print("✅ Found user:", user.email)
+    print("🔐 Hashed password in DB:", user.hashed_password)
+
+    if not pwd_context.verify(form_data.password, user.hashed_password):
+        print("*Password mismatch!")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        print("Password verified!")
 
     access_token = auth.create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
