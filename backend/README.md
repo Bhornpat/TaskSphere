@@ -38,7 +38,7 @@ uvicorn main:app --reload
 ### Configure `.env`
 
 ```env
-DATABASE_URL=postgresql://myuser:mypass@localhost:5432/tasksphere
+DATABASE_URL=postgresql://myuser:mypass@localhost:5433/tasksphere
 SECRET_KEY=supersecretkey123
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30

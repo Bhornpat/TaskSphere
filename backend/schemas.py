@@ -20,9 +20,19 @@ class UserOut(BaseModel):
     email: EmailStr
     created_at: datetime
 
+
+# Input when creating a task
 class TaskCreate(BaseModel):
     title: str
     description: str
+    due_date: datetime
+
+# Output when returning to frontend
+class TaskOut(BaseModel):
+    id: int
+    title: str
+    description: str
+    status: str
     due_date: datetime
 
     model_config = {

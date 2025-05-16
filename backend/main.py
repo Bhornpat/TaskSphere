@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi import status
 from utils import pwd_context
 import auth
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +11,7 @@ import models, schemas, utils
 
 from fastapi import Body
 from schemas import TaskCreate
+from schemas import TaskOut
 from models import Task, User
 from typing import List
 
@@ -97,16 +97,17 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     print(user_data.dict())
     return new_user
 
-
-@app.post("/tasks", response_model=TaskCreate)
+#Used response_model=TaskOut in FastAPI to define task.id
+@app.post("/tasks", response_model=schemas.TaskOut)
 def create_task(
-    task: TaskCreate,
+    task: schemas.TaskCreate,
     db: Session = Depends(get_db),
     email: str = Depends(auth.verify_token)
 ):
     user = db.query(User).filter(User.email == email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
 
     new_task = Task(
         title=task.title,
@@ -120,8 +121,8 @@ def create_task(
     db.refresh(new_task)
     return new_task
 
-
-@app.get("/tasks", response_model=List[TaskCreate])
+#TaskCreate is for input , TaskOut is for response
+@app.get("/tasks", response_model=list[schemas.TaskOut])
 def get_tasks(
     db: Session = Depends(get_db),
     email: str = Depends(auth.verify_token)
@@ -130,8 +131,40 @@ def get_tasks(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    tasks = db.query(Task).filter(Task.user_id == user.id).all()
-    return tasks
+    return db.query(Task).filter(Task.user_id == user.id).all()
+
+
+@app.put("/tasks/{task_id}", response_model=TaskOut)
+def update_task(
+    task_id: int,
+    updated_task: TaskCreate,
+    db: Session = Depends(get_db),
+    email: str = Depends(auth.verify_token)
+):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    # Update fields
+    task.title = updated_task.title
+    task.description = updated_task.description
+    task.due_date = updated_task.due_date
+    task.status = updated_task.status
+
+    db.commit()
+    db.refresh(task)
+    return task
+
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int, db: Session = Depends(get_db), email: str = Depends(auth.verify_token)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    db.delete(task)
+    db.commit()
+    return {"detail": "Task deleted"}
+
 
 
 @app.exception_handler(StarletteHTTPException)
