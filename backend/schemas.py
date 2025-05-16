@@ -26,6 +26,7 @@ class TaskCreate(BaseModel):
     title: str
     description: str
     due_date: datetime
+    status: str = "pending"   #for save task edit
 
 # Output when returning to frontend
 class TaskOut(BaseModel):
