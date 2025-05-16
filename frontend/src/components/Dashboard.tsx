@@ -17,6 +17,12 @@ export default function Dashboard() {
 	const [newTask, setNewTask] = useState({ title: '', description: '', due_date: '' })
 	const [editModalTask, setEditModalTask] = useState<Task | null>(null)
 	const [editForm, setEditForm] = useState({ title: '', description: '', due_date: '' })
+	const [editError, setEditError] = useState('')
+	const [addError, setAddError] = useState('')
+	const [expandedTaskId, setExpandedTaskId] = useState<{ [id: number]: boolean }>({})
+
+
+
 
 	useEffect(() => {
 		const fetchTasks = async () => {
@@ -49,6 +55,11 @@ export default function Dashboard() {
 	}, [])
 
 	const handleAddTask = async () => {
+		// Add validation
+		if (!newTask.title.trim() || !newTask.description.trim() || !newTask.due_date) {
+			setAddError("All fields are required.")
+			return
+		}
 		const token = localStorage.getItem('token')
 		if (!token) return
 
@@ -59,7 +70,10 @@ export default function Dashboard() {
 					'Content-Type': 'application/json',
 					Authorization: `Bearer ${token}`,
 				},
-				body: JSON.stringify(newTask),
+				body: JSON.stringify({
+					...newTask,
+					status: 'pending', // required by backend
+				})
 			})
 
 			if (!res.ok) throw new Error('Failed to create task')
@@ -69,13 +83,14 @@ export default function Dashboard() {
 			setShowModal(false)
 			setNewTask({ title: '', description: '', due_date: '' })
 		} catch (err) {
-			console.error('Failed to add task:', err)
+			setAddError('Something went wrong')
+
 		}
 	}
 
 	return (
 		<div className="p-6">
-			<h1 className="text-3xl font-extrabold mb-6 text-center text-gray-900">Your Tasks</h1>
+			<h1 className="text-3xl font-extrabold mb-6 text-center  font-mono text-gray-900">Your Tasks</h1>
 
 			{error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
@@ -92,8 +107,42 @@ export default function Dashboard() {
 						className={`p-5 rounded border flex justify-between items-center ${task.status === 'done' ? 'bg-green-100' : 'bg-yellow-50'}`}
 					>
 						<div>
-							<p className="font-bold text-lg text-gray-700">{task.title}</p>
-							<p className="text-sm text-gray-600">{task.description}</p>
+							{/*title*/}
+							<p className="font-bold text-lg text-gray-700 break-all leading-relaxed">{task.title}</p>
+							{/*description*/}
+							<div className="text-sm text-gray-700 leading-relaxed font-mono break-words whitespace-normal"
+							>
+								{task.description.length > 55 ? (
+									expandedTaskId === task.id ? (
+										<>
+											<p>{task.description}</p>
+											<button
+												onClick={() =>
+													setExpandedTaskIds(prev => ({ ...prev, [task.id]: false }))
+												}
+												className="text-xs text-blue-600 underline mt-1"
+											>							Show less ▲
+											</button>
+										</>
+									) : (
+										<>
+											<p className="truncate">{task.description.slice(0, 55) + '...'} </p>
+											<button
+												onClick={() => setExpandedTaskId(prev => ({ ...prev, [task.id]: true }))
+												}
+												className="text-xs text-gray-600 underline mt-1"
+											>
+												Read more ▼
+											</button>
+										</>
+									)
+								) : (
+									<p>{task.description}</p>
+								)}
+							</div>
+
+
+							{/*due date*/}
 							<p className="mt-1 text-xs text-gray-500">Due: {task.due_date}</p>
 
 
@@ -130,6 +179,7 @@ export default function Dashboard() {
 										alert('Failed to delete task')
 									}
 								}}
+
 								className="mt-3 ml-2 px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 transition duration-150"
 							>
 								Delete
@@ -137,52 +187,58 @@ export default function Dashboard() {
 						</div>
 
 						{/* toggle status */}
-						<button
-							onClick={async () => {
-								const token = localStorage.getItem('token')
-								if (!token) return
+						<div className="shrink-0 w-[100px] text-right">
+							<button
+								onClick={async () => {
+									const token = localStorage.getItem('token')
+									if (!token) return
 
-								const newStatus = task.status === 'done' ? 'pending' : 'done'
+									const newStatus = task.status === 'done' ? 'pending' : 'done'
 
-								const res = await fetch(`http://192.168.137.50:8000/tasks/${task.id}`, {
-									method: 'PUT',
-									headers: {
-										'Content-Type': 'application/json',
-										Authorization: `Bearer ${token}`,
-									},
-									body: JSON.stringify({
-										title: task.title,
-										description: task.description,
-										due_date: task.due_date,
-										status: newStatus, //  status is flipped
-									}),
-								})
+									const res = await fetch(`http://192.168.137.50:8000/tasks/${task.id}`, {
+										method: 'PUT',
+										headers: {
+											'Content-Type': 'application/json',
+											Authorization: `Bearer ${token}`,
+										},
+										body: JSON.stringify({
+											title: task.title,
+											description: task.description,
+											due_date: task.due_date,
+											status: newStatus, //  status is flipped
+										}),
+									})
 
-								if (res.ok) {
-									const updated = await res.json()
-									setTasks(prev => prev.map(t => (t.id === updated.id ? updated : t)))
-								} else {
-									alert('Failed to update task status')
-								}
-							}}
-							className={`text-sm px-2 py-1 rounded font-semibold transition cursor-pointer ${task.status === 'done' ? 'bg-green-600 text-white' : 'bg-yellow-400 text-black'
-								}`}
-						>
-							{task.status === 'done' ? 'Done 🎉' : 'Pending ⏳'}
-						</button>
+									if (res.ok) {
+										const updated = await res.json()
+										setTasks(prev => prev.map(t => (t.id === updated.id ? updated : t)))
+									} else {
+										alert('Failed to update task status')
+									}
+								}}
 
+								className={`text-sm px-2 py-1 rounded font-semibold transition cursor-pointer ${task.status === 'done' ? 'bg-green-600 text-white' : 'bg-yellow-400 text-black'
+									}`}
+							>
+								{task.status === 'done' ? 'Done 🎉' : 'Pending ⏳'}
+							</button>
+						</div>
 
 					</div>
 				))}
 			</div>
 
-			{/* Modal Add task */}
+			{/* Add Task Moddel */}
 			{showModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
 					<div className="bg-white p-6 rounded shadow w-full max-w-md">
 						<h2 className="text-xl font-bold mb-4 text-gray-300">Add New Task</h2>
 
 						<div className="space-y-4">
+
+							{addError && (
+								<p className="text-red-500 text-sm text-center mb-2">{addError}</p>
+							)}
 							<input
 								type="text"
 								placeholder="Title"
@@ -229,6 +285,10 @@ export default function Dashboard() {
 						<h2 className="text-xl font-bold mb-4 text-gray-300">Edit Task</h2>
 
 						<div className="space-y-4">
+
+							{editError && (
+								<p className="text-red-500 text-sm text-center mb-2">{editError}</p>
+							)}
 							<input
 								type="text"
 								placeholder='Title'
@@ -263,28 +323,50 @@ export default function Dashboard() {
 								<button
 									onClick={async () => {
 										if (!editModalTask) return
+
+										// Validation
+										if (!editForm.title.trim() || !editForm.description.trim() || !editForm.due_date) {
+											setEditError("All fields are required.")
+											return
+										}
+
 										const token = localStorage.getItem('token')
+										setEditError('')  // Clear any old error
 
-										const res = await fetch(`http://192.168.137.50:8000/tasks/${editModalTask.id}`, {
-											method: 'PUT',
-											headers: {
-												'Content-Type': 'application/json',
-												Authorization: `Bearer ${token}`,
-											},
-											body: JSON.stringify({
-												...editForm,
-												status: editModalTask.status,
-											}),
-										})
+										try {
 
-										if (res.ok) {
+											const res = await fetch(`http://192.168.137.50:8000/tasks/${editModalTask.id}`, {
+												method: 'PUT',
+												headers: {
+													'Content-Type': 'application/json',
+													Authorization: `Bearer ${token}`,
+												},
+												body: JSON.stringify({
+													...editForm,
+													status: editModalTask.status,
+												}),
+											})
+
+											// if (res.ok) {
+											// 	const updated = await res.json()
+											// 	setTasks(prev =>
+											// 		prev.map(t => (t.id === updated.id ? updated : t))
+											// 	)
+											// 	setEditModalTask(null)
+											// } else {
+											// 	alert('Failed to update task')
+											// }
+											if (!res.ok) {
+												const data = await res.json()
+												setEditError(data.detail || 'Update failed')  // Show backend error
+												return
+											}
+
 											const updated = await res.json()
-											setTasks(prev =>
-												prev.map(t => (t.id === updated.id ? updated : t))
-											)
+											setTasks(prev => prev.map(t => (t.id === updated.id ? updated : t)))
 											setEditModalTask(null)
-										} else {
-											alert('Failed to update task')
+										} catch (err) {
+											setEditError('Something went wrong')
 										}
 									}}
 									className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
