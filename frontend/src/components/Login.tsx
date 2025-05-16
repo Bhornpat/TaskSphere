@@ -40,7 +40,7 @@ export default function Login() {
 
 	return (
 		<div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-			<h2 className="text-2xl font-bold mb-4 text-center">Login to Your Account</h2>
+			<h2 className="text-2xl font-bold mb-4 text-center text-gray-400">Login to Your Account</h2>
 			{error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<input
