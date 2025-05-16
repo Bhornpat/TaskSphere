@@ -136,7 +136,42 @@ export default function Dashboard() {
 							</button>
 						</div>
 
-						<span className={`text-sm px-2 py-1 rounded font-medium ${task.status === 'done' ? 'bg-green-600 text-white' : 'bg-yellow-400 text-black'}`}>{task.status === 'done' ? 'Done' : 'Pending'}</span>
+						{/* toggle status */}
+						<button
+							onClick={async () => {
+								const token = localStorage.getItem('token')
+								if (!token) return
+
+								const newStatus = task.status === 'done' ? 'pending' : 'done'
+
+								const res = await fetch(`http://192.168.137.50:8000/tasks/${task.id}`, {
+									method: 'PUT',
+									headers: {
+										'Content-Type': 'application/json',
+										Authorization: `Bearer ${token}`,
+									},
+									body: JSON.stringify({
+										title: task.title,
+										description: task.description,
+										due_date: task.due_date,
+										status: newStatus, //  status is flipped
+									}),
+								})
+
+								if (res.ok) {
+									const updated = await res.json()
+									setTasks(prev => prev.map(t => (t.id === updated.id ? updated : t)))
+								} else {
+									alert('Failed to update task status')
+								}
+							}}
+							className={`text-sm px-2 py-1 rounded font-semibold transition cursor-pointer ${task.status === 'done' ? 'bg-green-600 text-white' : 'bg-yellow-400 text-black'
+								}`}
+						>
+							{task.status === 'done' ? 'Done 🎉' : 'Pending ⏳'}
+						</button>
+
+
 					</div>
 				))}
 			</div>
@@ -145,7 +180,7 @@ export default function Dashboard() {
 			{showModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
 					<div className="bg-white p-6 rounded shadow w-full max-w-md">
-						<h2 className="text-xl font-bold mb-4">Add New Task</h2>
+						<h2 className="text-xl font-bold mb-4 text-gray-300">Add New Task</h2>
 
 						<div className="space-y-4">
 							<input
@@ -172,7 +207,7 @@ export default function Dashboard() {
 							<div className="flex justify-end space-x-2 pt-4">
 								<button
 									onClick={() => setShowModal(false)}
-									className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+									className="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500"
 								>
 									Cancel
 								</button>
@@ -191,11 +226,12 @@ export default function Dashboard() {
 			{editModalTask && (
 				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
 					<div className="bg-white p-6 rounded shadow w-full max-w-md">
-						<h2 className="text-xl font-bold mb-4">Edit Task</h2>
+						<h2 className="text-xl font-bold mb-4 text-gray-300">Edit Task</h2>
 
 						<div className="space-y-4">
 							<input
 								type="text"
+								placeholder='Title'
 								value={editForm.title}
 								onChange={e => setEditForm({ ...editForm, title: e.target.value })}
 								className="w-full p-2 border rounded"
@@ -203,6 +239,7 @@ export default function Dashboard() {
 							/>
 							<input
 								type="text"
+								placeholder='Description'
 								value={editForm.description}
 								onChange={e => setEditForm({ ...editForm, description: e.target.value })}
 								className="w-full p-2 border rounded"
@@ -218,7 +255,7 @@ export default function Dashboard() {
 							<div className="flex justify-end gap-2">
 								<button
 									onClick={() => setEditModalTask(null)}
-									className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+									className="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500"
 								>
 									Cancel
 								</button>
