@@ -96,7 +96,7 @@ export default function Dashboard() {
 
 			<button
 				onClick={() => setShowModal(true)}
-				className="text-md mr-3 mb-4 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+				className="text-md mr-3 mb-4 bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
 			>
 				+ Add Task
 			</button>
@@ -112,21 +112,21 @@ export default function Dashboard() {
 							{/*description*/}
 							<div className="text-sm text-gray-700 leading-relaxed font-mono break-words whitespace-normal"
 							>
-								{task.description.length > 55 ? (
-									expandedTaskId === task.id ? (
+								{task.description.length > 58 ? (
+									expandedTaskId[task.id] ? (
 										<>
-											<p>{task.description}</p>
+											<p className="break-all whitespace-normal">{task.description}</p>
 											<button
 												onClick={() =>
-													setExpandedTaskIds(prev => ({ ...prev, [task.id]: false }))
+													setExpandedTaskId(prev => ({ ...prev, [task.id]: false }))
 												}
-												className="text-xs text-blue-600 underline mt-1"
+												className="text-xs text-gray-600 underline mt-1"
 											>							Show less ▲
 											</button>
 										</>
 									) : (
 										<>
-											<p className="truncate">{task.description.slice(0, 55) + '...'} </p>
+											<p className="break-words whitespace-normal">{task.description.slice(0, 58) + '...'} </p>
 											<button
 												onClick={() => setExpandedTaskId(prev => ({ ...prev, [task.id]: true }))
 												}
@@ -137,13 +137,13 @@ export default function Dashboard() {
 										</>
 									)
 								) : (
-									<p>{task.description}</p>
+									<p className="break-words whitespace-normal">{task.description}</p>
 								)}
 							</div>
 
 
 							{/*due date*/}
-							<p className="mt-1 text-xs text-gray-500">Due: {task.due_date}</p>
+							<p className="mt-1 text-xs text-gray-500">Due: {task.due_date.split('T')[0]}</p>
 
 
 							<button
