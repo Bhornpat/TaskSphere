@@ -1,0 +1,56 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - "backend/**"
+  pull_request:
+    paths:
+      - "backend/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mypass
+          POSTGRES_DB: TaskSphere
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: ⬇ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install backend deps
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🔁 Run Alembic migrations
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://myuser:mypass@db:5432/TaskSphere
+        run: alembic upgrade head
+
+      - name: ✅ Run Pytest
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://myuser:mypass@db:5432/TaskSphere
+        run: pytest
+
