@@ -23,9 +23,9 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
 
-# @app.get("/")
-# def read_root():
-#     return {"message":"I'm watching YOU!"}
+@app.get("/")
+def read_root():
+    return {"message":"I'm watching YOU!"}
 
 
 # DB dependency
@@ -51,6 +51,7 @@ app.add_middleware(
     allow_methods=["*"],  # or ["POST", "GET"]
     allow_headers=["*"],
 )
+
 
 @app.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -138,6 +139,7 @@ def get_tasks(
 @app.get("/health")
 def healthcheck():
     return {"status": "ok"}
+
 
 
 
