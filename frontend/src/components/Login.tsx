@@ -18,7 +18,7 @@ export default function Login() {
 			formData.append('username', email)
 			formData.append('password', password)
 
-			const res = await fetch('http://192.168.137.50:8000/login', {
+			const res = await fetch('https://192.168.137.50:8000/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',

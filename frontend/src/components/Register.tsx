@@ -16,7 +16,7 @@ export default function Register() {
 		setSuccess('')
 
 		try {
-			const res = await fetch('http://192.168.137.50:8000/register', {
+			const res = await fetch('https://192.168.137.50:8000/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
