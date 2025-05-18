@@ -33,8 +33,12 @@ export default function Login() {
 			localStorage.setItem('token', data.access_token)
 			//  Redirect
 			router.push('/dashboard')
-		} catch (err: any) {
-			setError(err.message)
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message)
+			} else {
+				setError('Something went wrong')
+			}
 		}
 	}
 

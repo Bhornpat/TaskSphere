@@ -46,9 +46,14 @@ export default function Dashboard() {
 
 				const data = await res.json()
 				setTasks(data)
-			} catch (err: any) {
-				setError(err.message || 'Something went wrong')
+			} catch (err: unknown) {
+				if (err instanceof Error) {
+					setError(err.message)
+				} else {
+					setError('Something went wrong')
+				}
 			}
+
 		}
 
 		fetchTasks()
@@ -82,7 +87,7 @@ export default function Dashboard() {
 			setTasks(prev => [...prev, created])
 			setShowModal(false)
 			setNewTask({ title: '', description: '', due_date: '' })
-		} catch (err) {
+		} catch {
 			setAddError('Something went wrong')
 
 		}
@@ -363,7 +368,7 @@ export default function Dashboard() {
 											const updated = await res.json()
 											setTasks(prev => prev.map(t => (t.id === updated.id ? updated : t)))
 											setEditModalTask(null)
-										} catch (err) {
+										} catch {
 											setEditError('Something went wrong')
 										}
 									}}

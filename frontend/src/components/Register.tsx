@@ -34,8 +34,12 @@ export default function Register() {
 			setTimeout(() => {
 				router.push('/login')
 			}, 5000)
-		} catch (err: any) {
-			setError(err.message || 'Something went wrong')
+		} catch (err: unknown) {
+			if (err instanceof Error) {
+				setError(err.message || 'Something went wrong')
+			} else {
+				setError('Something went wrong')
+			}
 		}
 	}
 
