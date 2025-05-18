@@ -14,11 +14,20 @@ def get_db():
 # Load .env file
 load_dotenv()
 
+use_docker = os.getenv("DOCKER") == "1"
+
+DATABASE_URL = (
+    "postgresql://myuser:mypass@db:5432/TaskSphere"
+    if use_docker
+    else "postgresql://myuser:mypass@localhost:5432/TaskSphere"
+)
+
+
 # Get the database URL from the environment
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Create SQLAlchemy engine and session
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base class for models
