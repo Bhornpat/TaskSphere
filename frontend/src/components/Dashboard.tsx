@@ -295,7 +295,6 @@ export default function Dashboard() {
 								value={editForm.title}
 								onChange={e => setEditForm({ ...editForm, title: e.target.value })}
 								className="w-full p-2 border rounded"
-								placeholder="Title"
 							/>
 							<input
 								type="text"
@@ -303,7 +302,6 @@ export default function Dashboard() {
 								value={editForm.description}
 								onChange={e => setEditForm({ ...editForm, description: e.target.value })}
 								className="w-full p-2 border rounded"
-								placeholder="Description"
 							/>
 							<input
 								type="date"
