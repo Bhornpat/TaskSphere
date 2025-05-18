@@ -38,3 +38,4 @@ services:
 volumes:
   tasksphere-db-data:
 
+#db: is the service name and Docker Compose gives you internal DNS for free (e.g. backend can reach db by name)
