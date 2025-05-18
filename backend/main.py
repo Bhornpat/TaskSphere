@@ -134,6 +134,13 @@ def get_tasks(
     return db.query(Task).filter(Task.user_id == user.id).all()
 
 
+# backend CI
+@app.get("/health")
+def healthcheck():
+    return {"status": "ok"}
+
+
+
 @app.put("/tasks/{task_id}", response_model=TaskOut)
 def update_task(
     task_id: int,
