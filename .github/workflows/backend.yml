@@ -46,7 +46,7 @@ jobs:
         working-directory: backend
         env:
           DATABASE_URL: postgresql://myuser:mypass@db:5432/TaskSphere
-        run: alembic upgrade head
+        # run: alembic upgrade head
 
       - name: ✅ Run Pytest
         working-directory: backend
