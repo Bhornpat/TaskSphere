@@ -33,7 +33,7 @@ export default function Dashboard() {
 			}
 
 			try {
-				const res = await fetch('https://192.168.137.50:8000/tasks', {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
 					method: 'GET',
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ export default function Dashboard() {
 		if (!token) return
 
 		try {
-			const res = await fetch('https://192.168.137.50:8000/tasks', {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ export default function Dashboard() {
 									const confirmed = confirm('Are you sure you want to delete this task?')
 									if (!confirmed || !token) return
 
-									const res = await fetch(`https://192.168.137.50:8000/tasks/${task.id}`, {
+									const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${task.id}`, {
 										method: 'DELETE',
 										headers: {
 											Authorization: `Bearer ${token}`,
@@ -200,7 +200,7 @@ export default function Dashboard() {
 
 									const newStatus = task.status === 'done' ? 'pending' : 'done'
 
-									const res = await fetch(`https://192.168.137.50:8000/tasks/${task.id}`, {
+									const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${task.id}`, {
 										method: 'PUT',
 										headers: {
 											'Content-Type': 'application/json',
@@ -338,7 +338,7 @@ export default function Dashboard() {
 
 										try {
 
-											const res = await fetch(`https://192.168.137.50:8000/tasks/${editModalTask.id}`, {
+											const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${editModalTask.id}`, {
 												method: 'PUT',
 												headers: {
 													'Content-Type': 'application/json',
