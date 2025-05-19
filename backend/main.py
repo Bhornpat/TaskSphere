@@ -38,6 +38,7 @@ def get_db():
 
 # Only allow from your frontend, or use "*" during dev
 origins = [
+    "https://tasksphere-flame.vercel.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://vmserver:3000",
