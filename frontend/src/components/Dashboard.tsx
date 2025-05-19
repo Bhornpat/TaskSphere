@@ -40,12 +40,29 @@ export default function Dashboard() {
 					},
 				})
 
+
+					.then(res => res.text())
+					.then(console.log)
+
 				if (!res.ok) {
 					throw new Error('Failed to fetch tasks')
 				}
 
-				const data = await res.json()
-				setTasks(data)
+				// const data = await res.json()
+				// setTasks(data)
+				const raw = await res.text()
+				console.log("🧾 Raw response from backend:", raw)
+
+				try {
+					const data = JSON.parse(raw)
+					setTasks(data)
+				} catch (e) {
+					setError("❌ Backend returned HTML instead of JSON")
+				}
+
+
+
+
 			} catch (err: unknown) {
 				if (err instanceof Error) {
 					setError(err.message)
