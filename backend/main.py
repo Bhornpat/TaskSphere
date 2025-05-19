@@ -52,9 +52,8 @@ print("✅ Done")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
-    # allow_credentials=True,
     allow_credentials=False,
+    allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
     allow_methods=["*"],  # or ["POST", "GET"]
     allow_headers=["*"],
 )
