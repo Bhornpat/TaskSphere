@@ -52,12 +52,9 @@ print("✅ Done")
 
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
-    allow_credentials=True,
-    allow_origins=[
-        "https://tasksphere-flame.vercel.app",  # ← Your Vercel URL
-        "http://localhost:3000"  # ← for local dev
-    ],
+    allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
+    # allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],  # or ["POST", "GET"]
     allow_headers=["*"],
 )
