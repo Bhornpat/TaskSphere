@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from database import SessionLocal
+from database import SessionLocal, Base, engine
 import models, schemas, utils
 
 from fastapi import Body
@@ -23,9 +23,9 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message":"I'm watching YOU!"}
+# @app.get("/")
+# def read_root():
+#     return {"message":"I'm watching YOU!"}
 
 
 # DB dependency
@@ -43,6 +43,11 @@ origins = [
     "http://vmserver:3000",
     "http://192.168.137.196:3000",
 ]
+
+print("🛠 Creating tables if they don't exist...")
+Base.metadata.create_all(bind=engine)
+print("✅ Done")
+
 
 app.add_middleware(
     CORSMiddleware,
