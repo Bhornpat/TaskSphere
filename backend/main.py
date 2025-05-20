@@ -1,6 +1,6 @@
 from fastapi import FastAPI 
 from fastapi.security import OAuth2PasswordRequestForm 
-from utils import pwd_context
+from utils.security import pwd_context
 import auth
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -14,6 +14,8 @@ from schemas import TaskCreate
 from schemas import TaskOut
 from models import Task, User
 from typing import List
+from healthcheck import router as health_router
+from utils.logger import logger
 
 from fastapi.responses import JSONResponse
 from fastapi.requests import Request
@@ -45,7 +47,6 @@ origins = [
     "http://192.168.137.196:3000",
 ]
 
-print("🛠 Creating tables if they don't exist...")
 Base.metadata.create_all(bind=engine)
 print("✅ Done")
 
@@ -57,6 +58,17 @@ app.add_middleware(
     allow_methods=["*"],  # or ["POST", "GET"]
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def on_startup():
+    logger.info("🚀 TaskSphere API starting up...")
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    logger.info("🛑 TaskSphere API shutting down...")
+
+app.include_router(health_router)
 
 
 @app.post("/login")
