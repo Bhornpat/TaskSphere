@@ -1,5 +1,6 @@
 # Tasksphere — Frontend (Next.js + TailwindCSS)
 
+hi
 This frontend is built using **Next.js** (App Router), **TailwindCSS**, and **TypeScript**, and connects to a FastAPI backend via REST APIs with JWT authentication.
 
 ---
