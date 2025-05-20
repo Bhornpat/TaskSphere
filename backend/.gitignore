@@ -19,4 +19,4 @@ alembic/versions/__pycache__/
 .DS_Store
 
 #utility
-utils
+utils/
