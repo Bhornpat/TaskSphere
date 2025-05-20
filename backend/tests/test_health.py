@@ -1,11 +1,16 @@
-import fastapi
-from fastapi.testclient import TestClient
-from main import app
+import sys
+import os
 
- #is a testing wrapper that allows you to simulate HTTP requests to your FastAPI app without running the actual server
-client = TestClient(app) 
+# Make sure Python sees backend/ as the root
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "backend")))
+
+from main import app
+from fastapi.testclient import TestClient
+
+client = TestClient(app)
 
 def test_healthcheck():
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json["status"] == "ok"
+    assert response.json()["status"] == "ok"
+

@@ -1,8 +1,9 @@
 # test_db_connection.py
-
-from sqlalchemy import create_engine
-from dotenv import load_dotenv
 import os
+
+from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
+
 
 # Load the .env file
 load_dotenv()
@@ -16,7 +17,7 @@ engine = create_engine(DATABASE_URL)
 try:
     # Try to connect
     with engine.connect() as connection:
-        result = connection.execute("SELECT 1")
+        result = connection.execute(text("SELECT 1"))
         print("[✅] Database connected successfully:", result.scalar())
 except Exception as e:
     print("[❌] Database connection failed:")
