@@ -4,20 +4,18 @@ TaskSphere is a modern full-stack task management application built for real-wor
 
 ---
 
-## Tech Stack
-
-| Layer      | Tech                               |
-|------------|------------------------------------|
-| Frontend   | Next.js, TypeScript, TailwindCSS   |
-| Backend    | FastAPI, SQLAlchemy, Uvicorn       |
-| Database   | PostgreSQL                         |
-| Auth       | JWT (JSON Web Token)               |
-| ORM        | SQLAlchemy + Alembic               |
-| DevOps     | Docker, Docker Compose             |
-| CI/CD	     | GitHub Actions	                  |
-| GUI Tool	 | DBeaver                            |
-| Monitoring | /health endpoint, logging to file  |
-| Hosting    | Backend: ngrok • Frontend: Vercel  |
+## Tech Stack                              
+                              
+Frontend    Next.js, TypeScript, TailwindCSS   
+Backend     FastAPI, SQLAlchemy, Uvicorn      
+Database    PostgreSQL                         
+Auth        JWT (JSON Web Token)               
+ORM         SQLAlchemy + Alembic               
+DevOps      Docker, Docker Compose             
+CI/CD	      GitHub Actions	                  
+GUI Tool	  DBeaver                            
+Monitoring  `/health` endpoint, logging to file  
+Hosting     Backend: ngrok • Frontend: Vercel  
 
 ---
 
