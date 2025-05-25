@@ -11,7 +11,7 @@ Backend - FastAPI, SQLAlchemy, Uvicorn
 Database - PostgreSQL                         
 Auth - JWT (JSON Web Token)               
 ORM - SQLAlchemy + Alembic               
-DevOps - Docker, Docker Compose             
+DevOps - Docker             
 CI/CD	- GitHub Actions	                  
 GUI Tool - DBeaver                            
 Monitoring  - `/health` endpoint, logging to file  
