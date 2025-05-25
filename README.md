@@ -25,53 +25,62 @@ TaskSphere is a modern full-stack task management application built for real-wor
 
 Clone the Repo
 
-```bash
+```
 git clone https://github.com/YOUR_USERNAME/TaskSphere.git
 cd TaskSphere
-
+```
 ---
 
 🔹 Backend Setup
 
 #Create and activate a virtualenv
+```
 cd backend
 python -m venv venv
 source venv/bin/activate 
-
+```
 #Install dependencies
+```
 pip install -r requirements.txt
+```
 
 #Set environment variables in .env
+```
 DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/tasksphere
 SECRET_KEY=your-secret-key
-
+```
 ### 🛠 Alembic Migrations
 # Create a new migration
+```
 alembic revision --autogenerate -m "Add new fields to Task model"
-
+```
 #Initialize the DB, Apply all migrations
+```
 alembic upgrade head
-
+```
 #Run the FastAPI server
+```
 uvicorn main:app --reload
-
+```
 
 🔹 Frontend Setup
 
 #npm Installation, Start development server
+```
 cd frontend
 npm install
 npm run dev
-
+```
 
 ---
 
 #Docker + Docker Compose
+```
 docker-compose up --build
 Backend: http://localhost:8000
 Frontend: http://localhost:3000
 DB: running inside container on port 5432
-
+```
 ---
 
 # Auth Flow
@@ -142,9 +151,10 @@ DB: running inside container on port 5432
 
 🧪 Testing
 #To run backend unit tests
+```
 cd backend
 pytest tests/
-
+```
 
 ---
 
