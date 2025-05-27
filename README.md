@@ -72,15 +72,6 @@ npm run dev
 
 ---
 
-#Docker + Docker Compose
-```
-docker-compose up --build
-Backend: http://localhost:8000
-Frontend: http://localhost:3000
-DB: running inside container on port 5432
-```
----
-
 # Auth Flow
 
 - Register via /register
