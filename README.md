@@ -4,6 +4,11 @@ TaskSphere is a modern full-stack task management application built for real-wor
 
 ---
 
+![Task Modal Screenshot](screenshot/Screenshot1.png)
+
+
+---
+
 ## Tech Stack                              
                               
 Frontend - Next.js, TypeScript, TailwindCSS   
@@ -90,6 +95,12 @@ npm run dev
 cd backend
 pytest tests/
 ```
+
+---
+
+Logging
+
+![logging](screenshot/Screenshot2.png)
 
 ---
 
