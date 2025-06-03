@@ -102,7 +102,3 @@ Logging
 
 ![logging](screenshot/Screenshot2.png)
 
----
-
-📄 License
-MIT © 2025 — Open-source and forever free.
