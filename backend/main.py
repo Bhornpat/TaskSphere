@@ -1,6 +1,6 @@
 from fastapi import FastAPI 
 from fastapi.security import OAuth2PasswordRequestForm 
-from utils.security import pwd_context
+from utils.security import pwd_context, hash_password
 import auth
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -103,7 +103,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"Email {user_data.email} already exists.")
 
     # Hash password
-    hashed_pw = utils.hash_password(user_data.password)
+    hashed_pw = utils.security.hash_password(user_data.password)
     
     # Create user model
     new_user = models.User(
