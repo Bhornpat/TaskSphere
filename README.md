@@ -1,4 +1,4 @@
-# 🚀 TaskSphere – Fullstack Task Management App
+# 🚀 TaskSphere – Full-Stack Task Management App
 
 TaskSphere is a modern full-stack task management application built for real-world deployment. It combines a FastAPI backend, a Next.js frontend, PostgreSQL, CI/CD pipelines, logging, JWT authentication, and full Docker support. Built with performance and developer experience in mind.
 
@@ -24,7 +24,7 @@ Hosting - Backend: ngrok • Frontend: Vercel
 
 ---
 
-## 🚧 Setup & Installation
+## Setup & Installation
 
 Clone the Repo
 
