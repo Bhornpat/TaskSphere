@@ -14,25 +14,21 @@ export default function Login() {
 
 		try {
 			const formData = new URLSearchParams()
-			//  Must be 'username' — FastAPI expects this
 			formData.append('username', email)
 			formData.append('password', password)
 
-			/* 	const res = await fetch('https://192.168.137.50:8000/login', { */
 			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
-				body: formData.toString(),    // converts to a=b&c=d
+				body: formData.toString(),
 			})
 
 			if (!res.ok) throw new Error('Invalid credentials')
 
 			const data = await res.json()
-			//  Store JWT
 			localStorage.setItem('token', data.access_token)
-			//  Redirect
 			router.push('/dashboard')
 		} catch (err: unknown) {
 			if (err instanceof Error) {
@@ -44,34 +40,60 @@ export default function Login() {
 	}
 
 	return (
-		<div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-			<h2 className="text-2xl font-bold mb-4 text-center text-gray-400">Login to Your Account</h2>
-			{error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
-			<form onSubmit={handleSubmit} className="space-y-4">
-				<input
-					type="email"
-					value={email}
-					onChange={e => setEmail(e.target.value)}
-					placeholder="Email"
-					className="w-full p-2 border rounded"
-					required
-				/>
-				<input
-					type="password"
-					value={password}
-					onChange={e => setPassword(e.target.value)}
-					placeholder="Password"
-					className="w-full p-2 border rounded"
-					required
-				/>
-				<button
-					type="submit"
-					className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-				>
-					Login
-				</button>
-			</form>
+		<div
+			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
+			style={{ backgroundImage: "url('/your-star-background.jpg')" }} // update to your starry image path
+		>
+			<div className="bg-white/100 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-md mx-auto text-center space-y-6">
+				<h2 className="text-2xl md:text-3xl font-bold font-mono text-gray-800">
+					Login <br /> <span className='text-sm text-gray-500'> Ready to Launch? </span>
+				</h2>
+
+				{error && (
+					<p className="text-red-600 text-sm bg-red-100 p-2 rounded-md">
+						{error}
+					</p>
+				)}
+
+				<form onSubmit={handleSubmit} className="space-y-5 text-left">
+					<div>
+						<label htmlFor="email" className="block text-sm font-medium text-gray-700">
+							Email
+						</label>
+						<input
+							id="email"
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							placeholder="you@example.com"
+							className="mt-1 w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+							required
+						/>
+					</div>
+
+					<div>
+						<label htmlFor="password" className="block text-sm font-medium text-gray-700">
+							Password
+						</label>
+						<input
+							id="password"
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							placeholder="••••••••"
+							className="mt-1 w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+							required
+						/>
+					</div>
+
+					<button
+						type="submit"
+						className="w-full py-2 rounded-full text-white font-bold transition bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400 hover:brightness-110 shadow-md"
+					>
+						I'm Ready
+					</button>
+				</form>
+			</div>
 		</div>
 	)
 }
-
