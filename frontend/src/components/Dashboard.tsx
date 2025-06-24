@@ -20,7 +20,7 @@ export default function Dashboard() {
 	const [editModalTask, setEditModalTask] = useState<Task | null>(null)
 	const [editForm, setEditForm] = useState({ title: '', description: '', due_date: '' })
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
-	const [taskToDelete, setTaskToDelete] = useState(null);
+	const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
 	const [editError, setEditError] = useState('')
 	const [addError, setAddError] = useState('')
 	const [expandedTaskId, setExpandedTaskId] = useState<{ [id: number]: boolean }>({})
