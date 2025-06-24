@@ -1,46 +1,34 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import StickerCard from '@/components/StickerCard';
+'use client'
 
-const stickers = [
-  {
-    title: 'Yuna ✨',
-    content: 'Can animate when hover',
-    x: '5%',
-    y: '15%',
-  },
-  {
-    title: 'Yamado Ocha 🍵',
-    content: 'Ready for your mission',
-    x: '65%',
-    y: '10%',
-  },
-  {
-    title: 'Task Time',
-    content: '9 AM in 🌅',
-    x: '20%',
-    y: '50%',
-  },
-  {
-    title: 'Don’t Remove it',
-    content: 'Very important note!',
-    x: '60%',
-    y: '60%',
-  },
-  {
-    title: 'Car 🚗',
-    content: 'Zoom zoom...',
-    x: '80%',
-    y: '80%',
-  },
-];
+import { useRouter } from 'next/navigation'
+import { FaRocket } from 'react-icons/fa'
 
 export default function ExplorePage() {
+  const router = useRouter()
+
   return (
-    <main className="relative w-full h-screen bg-stars bg-cover overflow-hidden">
-      {stickers.map((sticker, idx) => (
-        <StickerCard key={idx} {...sticker} />
-      ))}
-    </main>
-  );
+    <div className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/milkyway-8190232_1920.jpg')" }}>
+
+      <div className="bg-black/80 text-white px-10 py-12 rounded-2xl max-w-[90vw] md:max-w-3xl text-center shadow-2xl ">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          Explore the <span className="text-yellow-400">Galaxy</span>
+        </h1>
+
+        <p className="text-md md:text-lg drop-shadow font-mono mb-3 text-gray-300">
+          This is your universe — make it productive and exciting
+        </p>
+
+        <div className="flex justify-center gap-6 pt-4">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-400 text-white font-semibold text-lg rounded-full shadow-md hover:brightness-110 hover:scale-105 transition text-shadow duration-300"
+          >
+            Let’s Fly to Dashboard <FaRocket className="ml-2" />
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
+

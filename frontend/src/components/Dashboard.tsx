@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 interface Task {
 	id: number
@@ -23,10 +24,8 @@ export default function Dashboard() {
 	const [editError, setEditError] = useState('')
 	const [addError, setAddError] = useState('')
 	const [expandedTaskId, setExpandedTaskId] = useState<{ [id: number]: boolean }>({})
-	const [stickerConfigTask, setStickerConfigTask] = useState<Task | null>(null)
-	const [stickerEmoji, setStickerEmoji] = useState("🌟")
-	const [stickerColor, setStickerColor] = useState("#ffffff")
-	const [stickerMood, setStickerMood] = useState("inspired")
+	const router = useRouter();
+
 
 
 
@@ -35,7 +34,7 @@ export default function Dashboard() {
 		const fetchTasks = async () => {
 			const token = localStorage.getItem('token')
 			if (!token) {
-				setError('User not authenticated')
+				setError('Please sign in to continue')
 				return
 			}
 
@@ -51,11 +50,8 @@ export default function Dashboard() {
 					throw new Error('Failed to fetch tasks')
 				}
 
-				// const data = await res.json()
-				// setTasks(data)
-
-
-
+				const data = await res.json();
+				setTasks(data); // Make sure this line exists in your component
 
 			} catch (err: unknown) {
 				if (err instanceof Error) {
@@ -70,14 +66,20 @@ export default function Dashboard() {
 		fetchTasks()
 	}, [])
 
+
 	const handleAddTask = async () => {
+		// Reset error first
+		setAddError('');
 		// Add validation
 		if (!newTask.title.trim() || !newTask.description.trim() || !newTask.due_date) {
-			setAddError("All fields are required.")
+			setAddError("All fields are required")
 			return
 		}
-		const token = localStorage.getItem('token')
-		if (!token) return
+		const token = localStorage.getItem('token');
+		if (!token) {
+			setAddError("Please sign in to continue");
+			return;
+		}
 
 		try {
 			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, {
@@ -88,21 +90,21 @@ export default function Dashboard() {
 				},
 				body: JSON.stringify({
 					...newTask,
-					status: 'pending', // required by backend
-				})
-			})
+					status: 'pending',
+				}),
+			});
 
-			if (!res.ok) throw new Error('Failed to create task')
+			if (!res.ok) throw new Error('Failed to create task');
 
-			const created = await res.json()
-			setTasks(prev => [...prev, created])
-			setShowModal(false)
-			setNewTask({ title: '', description: '', due_date: '' })
+			const created = await res.json();
+			setTasks(prev => [...prev, created]);
+			setShowModal(false);
+			setNewTask({ title: '', description: '', due_date: '' });
+			setAddError('');
 		} catch {
-			setAddError('Something went wrong')
-
+			setAddError('Please sign in to continue');
 		}
-	}
+	};
 
 	return (
 		<div className="p-6">
@@ -111,7 +113,7 @@ export default function Dashboard() {
 			<div className='px-6 pt-12 flex justify-center items-center'>
 				<button
 					onClick={() => setShowModal(true)}
-					className="my-6 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md font-bold hover:brightness-110 transition duration-200"
+					className="my-6 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md text-shadow font-mono font-bold hover:brightness-110 transition duration-200"
 				>
 					Add Task Here
 				</button>
@@ -125,14 +127,97 @@ export default function Dashboard() {
 			<div className="space-y-6 px-5 ">
 				{tasks.map(task => (
 					<div key={task.id}
-						className={`px-5 rounded-lg border flex flex-col md:flex-row justify-between  ${task.status === 'done' ? 'bg-green-100' : 'bg-yellow-50'}`}
+						className={`px-4 pb-6 md:pb-0 rounded-lg border flex flex-col md:flex-row justify-between  ${task.status === 'done' ? 'bg-green-100' : 'bg-yellow-50'}`}
 					>
 						{/* Left side: content that expands */}
 						<div className="relative flex-1 min-w-0 z-0">
 
 
+
+							{/*title*/}
+							<div className="z-10 px-2 pt-5 pb-4">
+								<h2 className="font-mono text-lg sm:text-lg md:text-2xl font-bold pb-1 text-gray-800 break-words leading-relaxed max-w-full z-10">{task.title}</h2>
+								{/*description*/}
+								<div className="font-mono text-md sm:text-base md:text-lg text-gray-700 break-words leading-relaxed whitespace-normal max-w-full"
+								>
+									{task.description.length > 25 ? (
+										expandedTaskId[task.id] ? (
+											<>
+												<p className="font-mono text-md sm:text-base md:text-lg text-gray-700 break-words leading-relaxed whitespace-normal max-w-full">{task.description}</p>
+												<button
+													onClick={() =>
+														setExpandedTaskId(prev => ({ ...prev, [task.id]: false }))
+													}
+													className="text-xs text-gray-500 underline mt-1"
+												>							Show less
+												</button>
+											</>
+										) : (
+											<>
+												<p className="font-mono text-md sm:text-base md:text-lg text-gray-700 break-words leading-relaxed whitespace-normal max-w-full">{task.description.slice(0, 100) + '...'} </p>
+												<button
+													onClick={() => setExpandedTaskId(prev => ({ ...prev, [task.id]: true }))
+													}
+													className="font-mono text-xs text-gray-500 underline mt-1"
+												>
+													Read more 												</button>
+											</>
+										)
+									) : (
+										<p className="font-mono break-words whitespace-normal">{task.description}</p>
+									)}
+								</div>
+
+
+								{/*due date*/}
+								<p className="mt-1 text-sm font-mono text-gray-500">Due: {task.due_date.split('T')[0]}</p>
+
+
+								<div className='flex flex-row gap-2 items-center mt-3'>
+									<button
+										onClick={() => {
+											setEditModalTask(task)
+											setEditForm({
+												title: task.title,
+												description: task.description,
+												due_date: task.due_date.split('T')[0],
+											})
+										}}
+										className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-green-500 text-white text-xs shadow-md font-bold hover:brightness-110 transition text-shadow duration-200"
+									>
+										Edit
+									</button>
+
+									<button
+										onClick={() => {
+											setTaskToDelete(task.id);
+											setShowDeleteModal(true);
+										}}
+										className="px-4 py-2 rounded-full bg-red-500 text-white text-xs shadow-md font-bold hover:brightness-110 text-shadow transition duration-200">
+										Delete
+									</button>
+
+									{/**/}
+									{/* {/* Make Sticker */}
+									{/* <button */}
+									{/* 	onClick={() => { */}
+									{/* 		setStickerConfigTask(task) */}
+									{/* 		setStickerEmoji("💡") */}
+									{/* 		setStickerColor("#fffacd") */}
+									{/* 		setStickerMood("focus") */}
+									{/* 	}} */}
+									{/* 	className="px-4 py-2 rounded-full bg-gradient-to-br from-blue-500 via-purple-400 to-pink-300 text-white text-xs shadow-md font-bold hover:brightness-110 text-shadow transition duration-200" */}
+									{/* > */}
+									{/* 	Make Sticker */}
+									{/* </button> */}
+								</div>
+							</div>
+
+
+
+
 							{/*  Mobile-only emoji status toggle button */}
-							<div className="relative z-0">
+							<div className=" z-0 flex justify-center items-center">
 								<button
 									onClick={async () => {
 										const token = localStorage.getItem('token');
@@ -164,7 +249,7 @@ export default function Dashboard() {
 										}
 									}}
 								>
-									<span className={`absolute top-13 right-0 z-10 rounded-full w-10 h-10 flex items-center justify-center flex items-center gap-1 text-black text-sm font-semibold hover:scale-105 transition duration-300 shadow-md cursor-pointer $ md:hidden ${task.status === 'done' ? 'bg-green-500' : 'bg-yellow-400'}`}
+									<span className={`flex items-center justify-center gap-1 px-3 py-3 rounded-full text-black text-sm font-semibold hover:scale-105 transition duration-300 shadow-md cursor-pointer md:hidden ${task.status === 'done' ? 'bg-green-500' : 'bg-yellow-400'}`}
 									>
 										{task.status === 'done' ? '🎉' : '⏳'}
 									</span>								</button>
@@ -172,88 +257,12 @@ export default function Dashboard() {
 
 
 
-							{/*title*/}
-							<div className="relative z-10 px-2 py-6">
-								<h2 className="font-bold mb-2 text-xl text-gray-700 break-words whitespace-normal leading-relaxed z-10">{task.title}</h2>
-								{/*description*/}
-								<div className="text-md mr-2 text-gray-700 leading-relaxed font-mono break-words whitespace-normal"
-								>
-									{task.description.length > 25 ? (
-										expandedTaskId[task.id] ? (
-											<>
-												<p className="break-words whitespace-normal">{task.description}</p>
-												<button
-													onClick={() =>
-														setExpandedTaskId(prev => ({ ...prev, [task.id]: false }))
-													}
-													className="text-xs text-gray-500 underline mt-1"
-												>							Show less ▲
-												</button>
-											</>
-										) : (
-											<>
-												<p className="break-words whitespace-normal">{task.description.slice(0, 100) + '...'} </p>
-												<button
-													onClick={() => setExpandedTaskId(prev => ({ ...prev, [task.id]: true }))
-													}
-													className="text-xs text-gray-500 underline mt-1"
-												>
-													Read more ▼
-												</button>
-											</>
-										)
-									) : (
-										<p className="break-words whitespace-normal">{task.description}</p>
-									)}
-								</div>
 
 
-								{/*due date*/}
-								<p className="mt-2 text-sm text-gray-500">Due: {task.due_date.split('T')[0]}</p>
 
-
-								<div className='flex flex-row gap-2 mt-3 items-center mt-3'>
-									<button
-										onClick={() => {
-											setEditModalTask(task)
-											setEditForm({
-												title: task.title,
-												description: task.description,
-												due_date: task.due_date.split('T')[0],
-											})
-										}}
-										className="px-3 py-2 md:px-4 md:py-2 rounded-full bg-green-500 text-white text-xs shadow-md font-bold hover:brightness-110 transition duration-200"
-									>
-										Edit
-									</button>
-
-									<button
-										onClick={() => {
-											setTaskToDelete(task.id);
-											setShowDeleteModal(true);
-										}}
-										className="px-4 py-2 rounded-full bg-red-500 text-white text-xs shadow-md font-bold hover:brightness-110 transition duration-200"
-									>
-										Delete
-									</button>
-
-									{/* Make Sticker */}
-									<button
-										onClick={() => {
-											setStickerConfigTask(task)
-											setStickerEmoji("💡")
-											setStickerColor("#fffacd")
-											setStickerMood("focus")
-										}}
-										className="px-4 py-2 rounded-full bg-gradient-to-br from-blue-500 via-purple-400 to-pink-300 text-white text-xs shadow-md font-bold hover:brightness-110 transition duration-200"
-									>
-										Make Sticker
-									</button>
-								</div>
-							</div>
 						</div>
 						{/* toggle status */}
-						<div className="self-start md:self-center shrink-0 w-[100px] text-right md:mt-0 ml-4">
+						<div className="self-start md:self-center shrink-0 w-[100px] text-right md:mt-0 ml-4 mr-2">
 							<button
 								onClick={async () => {
 									const token = localStorage.getItem('token')
@@ -283,7 +292,7 @@ export default function Dashboard() {
 									}
 								}}
 
-								className={`hidden md:inline-block text-sm px-6 py-2 rounded-full hover:scale-105 transition duration-300 shadow-md font-bold cursor-pointer ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-yellow-400 text-black'
+								className={`hidden md:inline-block text-sm px-6 py-2 rounded-full hover:scale-105 transition duration-300 shadow-md text-shadow font-bold cursor-pointer ${task.status === 'done' ? 'bg-green-500 text-white' : 'bg-yellow-400 text-black'
 									}`}
 							>
 								{task.status === 'done' ? 'Done 🎉' : 'Pending ⏳'}
@@ -304,23 +313,39 @@ export default function Dashboard() {
 			{/* Add Task Moddel */}
 			{showModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-					<div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+					<div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xs md:max-w-xl lg:max-w-xl">
 						<h2 className="text-xl font-bold mb-4 font-mono text-gray-700">Add New Task</h2>
 
 						<div className="space-y-4">
 
 							{addError && (
-								<p className="text-red-500 text-sm text-center mb-2">{addError}</p>
-							)}
-							<input
-								type="text"
+								<p className="text-red-500 text-sm md:text-md text-center mb-2">
+									{addError === 'Please sign in to continue' ? (
+										<>
+											Please{' '}
+											<span
+												onClick={() => router.push('/login/')}
+												className="underline cursor-pointer hover:text-red-600 transition"
+											>
+												sign in
+											</span>{' '}
+											to continue
+										</>
+									) : (
+										addError
+									)}
+								</p>
+							)}							<textarea
+
+								rows={1}
 								placeholder="Title"
 								value={newTask.title}
 								onChange={e => setNewTask({ ...newTask, title: e.target.value })}
 								className="mt-1 w-full px-3 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
 							/>
-							<input
-								type="text"
+							<textarea
+
+								rows={6}
 								placeholder="Description"
 								value={newTask.description}
 								onChange={e => setNewTask({ ...newTask, description: e.target.value })}
@@ -354,7 +379,7 @@ export default function Dashboard() {
 
 			{editModalTask && (
 				<div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-					<div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+					<div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-xs md:max-w-xl lg:max-w-xl">
 						<h2 className="text-xl font-bold mb-4 font-mono text-gray-700">Edit Task</h2>
 
 						<div className="space-y-4">
@@ -362,15 +387,15 @@ export default function Dashboard() {
 							{editError && (
 								<p className="text-red-500 text-sm text-center mb-2">{editError}</p>
 							)}
-							<input
-								type="text"
+							<textarea
+								rows={1}
 								placeholder='Title'
 								value={editForm.title}
 								onChange={e => setEditForm({ ...editForm, title: e.target.value })}
 								className="mt-1 w-full px-3 py-2 border border-green-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
 							/>
-							<input
-								type="text"
+							<textarea
+								rows={6}
 								placeholder='Description'
 								value={editForm.description}
 								onChange={e => setEditForm({ ...editForm, description: e.target.value })}
@@ -397,7 +422,7 @@ export default function Dashboard() {
 
 										// Validation
 										if (!editForm.title.trim() || !editForm.description.trim() || !editForm.due_date) {
-											setEditError("All fields are required.")
+											setEditError("All fields are required")
 											return
 										}
 

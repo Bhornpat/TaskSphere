@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -9,6 +10,7 @@ export default function Register() {
 	const [error, setError] = useState('')
 	const [success, setSuccess] = useState('')
 	const router = useRouter()
+
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -26,13 +28,12 @@ export default function Register() {
 
 			if (!res.ok) {
 				const data = await res.json()
-				throw new Error(data.detail || 'Registration failed')
+				throw new Error(data.detail || 'This email is already taken. Please try signing in')
 			}
 
-			setSuccess('Account created! You can now log in.')
 			setTimeout(() => {
 				router.push('/login')
-			}, 5000)
+			}, 2000)
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				setError(err.message || 'Something went wrong')
@@ -46,8 +47,8 @@ export default function Register() {
 		<div
 			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
 		>
-			<div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-				<h2 className="text-2xl font-bold mb-6 text-center font-mono text-gray-700">
+			<div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-xs md:max-w-md">
+				<h2 className="text-xl md:text-2xl font-bold mb-6 text-center font-mono text-gray-700">
 					Create Your Account
 				</h2>
 
@@ -64,7 +65,7 @@ export default function Register() {
 							type="email"
 							value={email}
 							onChange={e => setEmail(e.target.value)}
-							className="mt-1 w-full px-4 py-2 border border-pink-400 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400
+							className="w-full px-4 py-2 border border-pink-400 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400
              text-gray-900 placeholder-gray-400 bg-white bg-opacity-90"
 							placeholder="you@example.com"
 							required
@@ -80,20 +81,29 @@ export default function Register() {
 							type="password"
 							value={password}
 							onChange={e => setPassword(e.target.value)}
-							className="mt-1 w-full px-4 py-2 border border-pink-400 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400
+							className="w-full px-4 py-2 border border-pink-400 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400
              text-gray-900 placeholder-gray-400 bg-white bg-opacity-90"
 							placeholder="••••••••"
 							required
 						/>
 					</div>
 
-					<div className='flex flex-col md:flex-row items-center justify-center gap-4 mt-6'>
+					<div className=' md:flex-row text-center items-center justify-center gap-4 mt-6'>
 						<button
 							type="submit"
-							className="w-full bg-gradient-to-r from-pink-600 via-red-500 to-yellow-400 text-white py-2 rounded-full hover:brightness-110 transition duration-300 shadow-md hover:shadow-md font-boldhover:brightness-110 transition duration-300  rounded-full font-bold"
+							className="w-full bg-gradient-to-r from-pink-600 via-red-500 to-yellow-400 text-white py-2 rounded-full hover:brightness-110 transition duration-300 shadow-md hover:shadow-md font-boldhover:brightness-110 transition duration-300 text-shadow rounded-full font-bold"
 						>
 							Sign Me Up
 						</button>
+
+						<p className="text-sm text-center mt-4 text-gray-600">
+							Already have an account?{" "}
+							<Link href="/login" className="text-pink-600 underline hover:text-pink-800">
+								Sign In
+							</Link>
+						</p>
+
+
 					</div>
 				</form>
 			</div>

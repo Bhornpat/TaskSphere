@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
@@ -44,9 +45,9 @@ export default function Login() {
 			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
 			style={{ backgroundImage: "url('/your-star-background.jpg')" }} // update to your starry image path
 		>
-			<div className="bg-white/100 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-md mx-auto text-center space-y-6">
+			<div className="bg-white/100 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-xs md:max-w-md mx-auto text-center space-y-6">
 				<h2 className="text-2xl md:text-3xl font-bold font-mono text-gray-800">
-					Login <br /> <span className='text-sm text-gray-500'> Ready to Launch? </span>
+					Sign In <br /> <span className='text-sm font-medium text-gray-500'> Ready to Launch? </span>
 				</h2>
 
 				{error && (
@@ -66,7 +67,7 @@ export default function Login() {
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							placeholder="you@example.com"
-							className="mt-1 w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+							className=" w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
 							required
 						/>
 					</div>
@@ -81,17 +82,25 @@ export default function Login() {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							placeholder="••••••••"
-							className="mt-1 w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+							className="w-full px-4 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
 							required
 						/>
 					</div>
 
 					<button
 						type="submit"
-						className="w-full py-2 rounded-full text-white font-bold transition bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400 hover:brightness-110 shadow-md"
+						className="w-full py-2 rounded-full text-white font-bold transition bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400 hover:brightness-110 text-shadow shadow-md"
 					>
 						I'm Ready
 					</button>
+
+					<p className="text-sm text-center mt-4 text-gray-600">
+						Still outside?{" "}
+						<Link href="/register" className="text-pink-600 underline hover:text-pink-800">
+							Sign Up
+						</Link>
+					</p>
+
 				</form>
 			</div>
 		</div>

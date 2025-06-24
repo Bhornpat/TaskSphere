@@ -51,7 +51,7 @@ Base.metadata.create_all(bind=engine)
 print("✅ Done")
 
 
-app.add_middleware(
+app.add_middleware (
     CORSMiddleware,
     allow_credentials=True,
     allow_origins=["*"],  # or set to ["http://localhost:3000"] for safety
@@ -76,7 +76,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     user = db.query(models.User).filter(models.User.email == form_data.username).first()
 
     print("username (from form):", form_data.username)
-    print("password (from form):", form_data.password)
+   # print("password (from form):", form_data.password)
 
     if not user:
         print("🚨 User not found!")
@@ -86,6 +86,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     print("🔐 Hashed password in DB:", user.hashed_password)
 
     if not pwd_context.verify(form_data.password, user.hashed_password):
+
         print("*Password mismatch!")
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -141,7 +142,7 @@ def create_task(
     return new_task
 
 #TaskCreate is for input , TaskOut is for response
-@app.get("/tasks", response_model=list[schemas.TaskOut])
+@app.get("/tasks", response_model=List[schemas.TaskOut])
 def get_tasks(
     db: Session = Depends(get_db),
     email: str = Depends(auth.verify_token)
@@ -168,9 +169,14 @@ def update_task(
     db: Session = Depends(get_db),
     email: str = Depends(auth.verify_token)
 ):
-    task = db.query(Task).filter(Task.id == task_id).first()
+
+    #  Securely verify user
+    user = db.query(User).filter(User.email == email).first()
+    #  Ensure the task belongs to the current user
+    task = db.query(Task).filter(Task.id == task_id, Task.user_id == user.id).first()
+
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail="Task not found or not authorized")
 
     # Update fields
     task.title = updated_task.title
