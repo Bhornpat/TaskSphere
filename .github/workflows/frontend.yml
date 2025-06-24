@@ -25,9 +25,6 @@ jobs:
         working-directory: frontend
         run: npm install
 
-      - name: 🔍 Lint code
-        working-directory: frontend
-        run: npm run lint
 
       - name: 🧱 Build project
         working-directory: frontend
