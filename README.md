@@ -4,8 +4,6 @@ TaskSphere is a modern full-stack task management application built for real-wor
 
 ---
 
-![Task Modal Screenshot](screenshot/Screenshot1.png)
-
 
 ---
 
