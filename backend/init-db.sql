@@ -1,0 +1,4 @@
+
+DROP DATABASE IF EXISTS "TaskSphere";
+CREATE DATABASE "TaskSphere";
+
