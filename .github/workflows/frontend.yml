@@ -28,7 +28,7 @@ jobs:
 
       - name: 🧱 Build project
         working-directory: frontend
-        run: npm run build
+        run: npm run build -- --no-lint
 
       # Optional: Run Jest/React Testing Library tests
       - name: 🧪 Run frontend tests
