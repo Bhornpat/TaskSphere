@@ -20,6 +20,7 @@ export default function Register() {
 		try {
 			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
 				method: 'POST',
+				credentials: 'include', // ถ้าคุณใช้ cookie
 				headers: {
 					'Content-Type': 'application/json',
 				},
