@@ -1,6 +1,5 @@
 'use client';
 
-import { FaGoogle, FaFacebook, FaGithub, FaUserLock } from 'react-icons/fa';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
 
@@ -25,7 +24,7 @@ export default function SignInModal({ onClose }: { onClose: () => void }) {
 				body: formData.toString(),
 			})
 
-			if (!res.ok) throw new Error('No account found. Please sign up first.')
+			if (!res.ok) throw new Error('No account found. Please sign up first')
 
 			const data = await res.json()
 			localStorage.setItem('token', data.access_token)
@@ -119,7 +118,7 @@ export default function SignInModal({ onClose }: { onClose: () => void }) {
 						<p className="text-red-600 text-sm bg-red-100 p-2 rounded-md">{error}</p>
 					)}
 
-					<div className="text-right text-sm">
+					<div className="text-right text-xs">
 						<a href="/forgot-password" className="text-gray-500 font-mono hover:underline">Forgot your password?</a>
 					</div>
 					<button

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, constr, validator
 from datetime import datetime
 
 
@@ -13,7 +13,7 @@ class TokenResponse(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
+    password: constr(min_length=6, max_length=20)
 
 class UserOut(BaseModel):
     id: int
@@ -41,4 +41,6 @@ class TaskOut(BaseModel):
     "from_attributes": True
 }
 
-
+ @validator('email')
+    def normalize_email(cls, v):
+        return v.lower()  # Optional: normalize before saving

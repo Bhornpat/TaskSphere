@@ -1,13 +1,10 @@
-# 🚀 TaskSphere – Full-Stack Task Management App
+## 🚀 TaskSphere – Full-Stack Task Management Web App
 
-TaskSphere is a modern full-stack task management application built for real-world deployment. It combines a FastAPI backend, a Next.js frontend, PostgreSQL, CI/CD pipelines, logging, JWT authentication, and full Docker support. Built with performance and developer experience in mind.
+full-stack task management web app built for real-world deployment. It combines a FastAPI backend, a Next.js frontend, PostgreSQL, CI/CD pipelines, logging, JWT authentication, and full Docker support. Frontend deploy in Vercel, backend deploy in Railway, and Database deploy in Neon
 
----
+----
 
-
----
-
-## Tech Stack                              
+### Tech Stack                              
                               
 Frontend - Next.js, TypeScript, TailwindCSS   
 Backend - FastAPI, SQLAlchemy, Uvicorn      
@@ -18,7 +15,7 @@ Container - Docker
 CI/CD	- GitHub Actions	                  
 GUI Tool - DBeaver                            
 Monitoring  - `/health` endpoint, logging to file  
-Hosting - Backend: ngrok • Frontend: Vercel  
+Hosting - Backend: Railway • Frontend: Vercel • DB: Neon
 
 ---
 
@@ -27,7 +24,7 @@ Hosting - Backend: ngrok • Frontend: Vercel
 Clone the Repo
 
 ```
-git clone https://github.com/YOUR_USERNAME/TaskSphere.git
+git clone https://github.com/Bhornpat/TaskSphere.git
 cd TaskSphere
 ```
 ---
@@ -77,12 +74,9 @@ npm run dev
 
 # Auth Flow
 
-- Register via /register
-
-- Login via /login with application/x-www-form-urlencoded
-
+- Sign up via /register
+- Sign in via /login with application/x-www-form-urlencoded
 - Store JWT token in frontend localStorage
-
 - Use Authorization: Bearer <token> to access protected /tasks APIs
 
 ---
@@ -93,7 +87,6 @@ npm run dev
 cd backend
 pytest tests/
 ```
-
 ---
 
 Logging

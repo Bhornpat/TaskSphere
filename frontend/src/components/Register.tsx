@@ -47,7 +47,7 @@ export default function Register() {
 		<div
 			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
 		>
-			<div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-xs md:max-w-md">
+			<div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm md:max-w-md">
 				<h2 className="text-xl md:text-2xl font-bold mb-6 text-center font-mono text-gray-700">
 					Create Your Account
 				</h2>

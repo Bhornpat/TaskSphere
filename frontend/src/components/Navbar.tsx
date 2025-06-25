@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
-import { FaUser } from 'react-icons/fa';
+
 
 export default function Navbar() {
 	const router = useRouter();
@@ -13,7 +13,7 @@ export default function Navbar() {
 	// Logout handler
 	const handleLogout = () => {
 		localStorage.removeItem('token');
-		window.location.href = '/homepage';
+		router.push('/homepage');
 	};
 
 	// Close dropdown if click outside
