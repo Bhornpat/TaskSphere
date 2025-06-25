@@ -1,11 +1,10 @@
 # TaskSphere – Backend API
 
-TaskSphere is a task management system built with FastAPI and PostgreSQL.
-This backend provides secure user registration, authentication via JWT, and task CRUD APIs.
+A task management web built with FastAPI and PostgreSQL. This backend provides secure user registration, authentication via JWT, and task CRUD APIs.
 
 ------
 
-## 🚀 Tech Stack
+### Tech Stack
 
 - **FastAPI** 
 - **PostgreSQL** (via Docker)
@@ -58,7 +57,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ---
 
-## 🔐 Auth Flow
+##  Auth Flow
 
 ### `/register` – Create account
 
@@ -121,10 +120,5 @@ Returns:
 
 ---
 
-## Test Connection (Optional Script)
 
-Run this to check DB connection:
-```bash
-python test_db_connection.py
-```
 
