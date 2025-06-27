@@ -42,6 +42,7 @@ def get_db():
 origins = [
     "https://tasksphere.tomo-naja.org",
     "https://tasksphere-flame.vercel.app",
+    "https://tasksphere-production-06ff.up.railway.app",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://vmserver:3000",
