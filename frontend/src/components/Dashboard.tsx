@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
 
 interface Task {
   id: number;
@@ -104,15 +105,28 @@ export default function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          ...newTask,
-          status: "pending",
+          title: newTask.title,
+      description: newTask.description,
+      due_date: format(newTask.due_date, "yyyy-MM-dd"), // fix here
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to create task");
+      if (!res.ok) {
+        if (res.status === 401) {
+          setAddError("Session expired or unauthorized. Please log in again");
+          localStorage.removeItem("token");
+          // Assuming `router` is imported and available (e.g., from `useRouter()`)
+          router.push("/login");
+          return;
+        }
+
+        const data = await res.json();
+        // Here, we throw a specific Error object, which will be caught below
+        throw new Error(data.detail || `Server error: ${res.status}`);
+      }
 
       const created = await res.json();
-      setTasks((prev) => [...prev, created]);
+      setTasks((prev) => [created, ...prev]);
       setShowModal(false);
       setNewTask({ title: "", description: "", due_date: null as Date | null });
       setAddError("");
@@ -125,7 +139,7 @@ export default function Dashboard() {
     <div className="p-6">
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-      <div className="px-6  pt-12 flex justify-center items-center">
+      <div className="px-6 pt-12 flex justify-center items-center">
         <button
           onClick={() => setShowModal(true)}
           className="my-12 z-10 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md text-shadow font-mono font-bold hover:brightness-110 transition duration-200"
@@ -158,8 +172,9 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-        {/*mobile toggle */}
+       
       </div>
+      {/*mobile toggle */}
       
       <div className="space-y-6 px-5">
         {tasks.map((task) => (
@@ -170,10 +185,10 @@ export default function Dashboard() {
             }`}
           >
             {/* Left side: content that expands */}
-            <div className="relative flex-1 min-w-0 z-0">
+            <div className="relative flex-1 min-w-0 ">
               {/*title*/}
               <div className=" px-2 pt-5 pb-4">
-                <h2 className="font-mono text-lg sm:text-lg md:text-2xl font-bold pb-1 text-gray-800 break-words leading-relaxed max-w-full z-10">
+                <h2 className="font-mono pr-10 md:pr-4 text-lg sm:text-lg md:text-2xl font-bold pb-1 text-gray-800 break-words leading-relaxed max-w-full z-10">
                   {task.title}
                 </h2>
                 {/*description*/}
@@ -293,7 +308,7 @@ export default function Dashboard() {
                   }}
                 >
                   <span
-                    className={`absolute top-4 right-0 gap-1 px-3 py-3 rounded-full text-black text-sm font-semibold hover:scale-105 transition duration-300 shadow-md cursor-pointer md:hidden ${
+                    className={`absolute top-3 right-0 gap-1 px-3 py-2.5 rounded-full text-black text-sm font-semibold hover:scale-105 transition duration-300 shadow-md cursor-pointer md:hidden ${
                       task.status === "done" ? "bg-green-500" : "bg-yellow-400"
                     }`}
                   >
@@ -302,6 +317,8 @@ export default function Dashboard() {
                 </button>
               </div>
             </div>
+
+
             {/* toggle status */}
             <div className="self-start md:self-center shrink-0 w-[100px] text-right md:mt-0 ml-4 mr-2">
               <button
@@ -399,8 +416,8 @@ export default function Dashboard() {
                 onChange={(date: Date | null) =>
                   setNewTask({ ...newTask, due_date: date })
                 }
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/yyyy"
+                dateFormat="yyyy-MM-dd"
+                placeholderText="yyyy-mm-dd"
                 className="mt-1 w-full px-3 py-2 border border-pink-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
               />
               <div className="flex justify-end space-x-2 pt-4">
@@ -455,12 +472,12 @@ export default function Dashboard() {
                 className="mt-1 w-full px-3 py-2 border border-green-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
               <DatePicker
-                selected={newTask.due_date}
+                selected={editForm.due_date}
                 onChange={(date: Date | null) =>
-                  setNewTask({ ...newTask, due_date: date })
+                  setEditForm({ ...editForm, due_date: date })
                 }
-                dateFormat="dd/MM/yyyy"
-                placeholderText="dd/mm/yyyy"
+                dateFormat="yyyy-MM-dd"
+                placeholderText="yyyy-mm-dd"
                 className="mt-1 w-full px-3 py-2 border border-green-300 text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               />
 
