@@ -10,10 +10,12 @@ export default function Register() {
 	const [error, setError] = useState('')
 	const [success, setSuccess] = useState('')
 	const router = useRouter()
+	const [loading, setLoading] = useState(false);
 
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
+		setLoading(true); // Start loading immediately on submit
 		setError('')
 		setSuccess('')
 
@@ -31,16 +33,17 @@ export default function Register() {
 				const data = await res.json()
 				throw new Error(data.detail || 'This email is already taken. Please try signing in')
 			}
-
-			setTimeout(() => {
 				router.push('/login')
-			}, 2000)
+			
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				setError(err.message || 'Something went wrong')
 			} else {
 				setError('Something went wrong')
-			}
+			} 
+		} finally {
+			setLoading(false); // <<< IMPORTANT FIX: Ensure loading is false after try/catch block
+		    
 		}
 	}
 
@@ -53,6 +56,15 @@ export default function Register() {
 					Create Your Account
 				</h2>
 
+				{loading && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-10 w-10 md:h-14 md:w-14 border-t-4 border-b-4 border-pink-500"></div>
+      <p className="mt-4 text-white text-sm md:text-lg font-semibold text-shadow-md">Loading...</p>
+    </div>
+  </div>
+)}
+				
 				{error && <p className="text-red-500 text-sm mb-3 text-center">{error}</p>}
 				{success && <p className="text-green-600 text-sm mb-3 text-center">{success}</p>}
 
@@ -99,7 +111,7 @@ export default function Register() {
 
 						<p className="text-sm text-center mt-4 text-gray-600">
 							Already have an account?{" "}
-							<Link href="/login" className="text-pink-600 underline hover:text-pink-800">
+							<Link href="/login" className="text-pink-600 underline hover:text-pink-800" onClick={() => setLoading(true)}>
 								Sign In
 							</Link>
 						</p>

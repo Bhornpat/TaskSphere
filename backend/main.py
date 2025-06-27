@@ -75,11 +75,16 @@ app.include_router(health_router)
 
 @app.post("/login")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.email == form_data.username).first()
+    normalized_email = form_data.username.lower()    #Correctly normalize the incoming email
+    
+    print("\n--- Login Attempt Debug ---")
+    print(f"1. Email from form (original): {form_data.username}")
+    print(f"2. Email normalized for DB lookup: {normalized_email}")
+    print(f"3. Password from form (raw, be careful with logs!): {form_data.password}") # TEMPORARY: For debugging ONLY. Remove in production
+    
+    user = db.query(models.User).filter(models.User.email == normalized_email).first()   #Use the normalized_email in your database query
 
-    print("username (from form):", form_data.username)
-   # print("password (from form):", form_data.password)
-
+   
     if not user:
         print("🚨 User not found!")
         raise HTTPException(status_code=401, detail="Invalid credentials")

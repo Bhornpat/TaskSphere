@@ -38,6 +38,8 @@ export default function Dashboard() {
   }>({});
   const router = useRouter();
   const [showSignInModal, setShowSignInModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
 
   const handleGoToSignIn = () => {
     setShowSignInModal(false); // Close the modal
@@ -46,9 +48,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchTasks = async () => {
+      setLoading(true); // Start loading
       const token = localStorage.getItem("token");
       if (!token) {
         setError("Please sign in to continue");
+        setLoading(false); // <<< Set loading to false here too!
         setShowSignInModal(true);
         return;
       }
@@ -72,8 +76,9 @@ export default function Dashboard() {
           setError(err.message);
         } else {
           setError("Something went wrong");
+        } } finally {
+          setLoading(false); // <--- This is also here! This should cover it.
         }
-      }
     };
 
     fetchTasks();
@@ -82,6 +87,7 @@ export default function Dashboard() {
   const handleAddTask = async () => {
     // Reset error first
     setAddError("");
+    setLoading(true); // <<< Sets loading to true when starting to add a task
     // Add validation
     if (
       !newTask.title.trim() ||
@@ -89,11 +95,13 @@ export default function Dashboard() {
       !newTask.due_date
     ) {
       setAddError("All fields are required");
+      setLoading(false); // <<< Sets loading to false if validation fails
       return;
     }
     const token = localStorage.getItem("token");
     if (!token) {
       setAddError("Please sign in to continue your tasks");
+      setLoading(false); // <<< Sets loading to false if validation fails
       return;
     }
 
@@ -114,7 +122,6 @@ export default function Dashboard() {
       if (!res.ok) {
         if (res.status === 401) {
           setAddError("Session expired or unauthorized. Please log in again");
-          localStorage.removeItem("token");
           // Assuming `router` is imported and available (e.g., from `useRouter()`)
           router.push("/login");
           return;
@@ -132,8 +139,11 @@ export default function Dashboard() {
       setAddError("");
     } catch {
       setAddError("Failed to create task. Please try again");
+    } finally {
+      setLoading(false); // <<< Ensures loading is false after API call (success or error)
     }
   };
+
 
   return (
     <div className="p-6">
@@ -163,7 +173,7 @@ export default function Dashboard() {
                 {/*                         Cancel */}
                 {/*                     </button> */}
                 <button
-                  className="px-4 py-2 z-20 md:px-5 md:py-2 rounded-full bg-red-500 text-white text-md md:text-lg shadow-md font-bold hover:brightness-110 transition text-shadow duration-200"
+                  className="px-4 py-2 z-20 md:px-5 md:py-2 hover:scale-105 transition text-shadow duration-300 rounded-full bg-red-500 text-white text-md md:text-lg shadow-md font-bold hover:brightness-110 transition text-shadow duration-200"
                   onClick={handleGoToSignIn}
                 >
                   Go to Sign In
@@ -274,6 +284,7 @@ export default function Dashboard() {
               <div className="z-0 flex justify-center items-center">
                 <button
                   onClick={async () => {
+                    setLoading(true);
                     const token = localStorage.getItem("token");
                     if (!token) return;
 
@@ -305,6 +316,7 @@ export default function Dashboard() {
                     } else {
                       alert("Failed to update task status");
                     }
+                    setLoading(false); // <<< Ensures loading is false after API call (success or error)
                   }}
                 >
                   <span
@@ -323,6 +335,7 @@ export default function Dashboard() {
             <div className="self-start md:self-center shrink-0 w-[100px] text-right md:mt-0 ml-4 mr-2">
               <button
                 onClick={async () => {
+                  setLoading(true);
                   const token = localStorage.getItem("token");
                   if (!token) return;
 
@@ -352,7 +365,9 @@ export default function Dashboard() {
                     );
                   } else {
                     alert("Failed to update task status");
-                  }
+                  } 
+                    setLoading(false); // <<< Ensures loading is false after API call (success or error)
+                  
                 }}
                 className={`hidden md:inline-block text-sm px-6 py-2 rounded-xl hover:scale-105 transition duration-300 shadow-md text-shadow font-bold cursor-pointer ${
                   task.status === "done"
@@ -491,7 +506,9 @@ export default function Dashboard() {
 
                 <button
                   onClick={async () => {
-                    if (!editModalTask) return;
+                    setLoading(true);
+                    if (!editModalTask)
+                      return;
 
                     // Validation
                     if (
@@ -499,7 +516,8 @@ export default function Dashboard() {
                       !editForm.description.trim() ||
                       !editForm.due_date
                     ) {
-                      setEditError("All fields are required");
+                      setEditError("All fields are required");  
+                      setLoading(false);
                       return;
                     }
 
@@ -534,6 +552,8 @@ export default function Dashboard() {
                       setEditModalTask(null);
                     } catch {
                       setEditError("Something went wrong");
+                    } finally {
+                      setLoading(false); // <<< Ensures loading is false after API call (success or error)
                     }
                   }}
                   className="px-4 py-3 rounded-full bg-green-500 text-white text-sm shadow-md font-bold hover:brightness-110 transition duration-200"
@@ -561,6 +581,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={async () => {
+                  setLoading(true);
                   const token = localStorage.getItem("token");
                   if (!token || !taskToDelete) return;
 
@@ -580,11 +601,12 @@ export default function Dashboard() {
                     );
                   } else {
                     alert("Failed to delete task.");
-                  }
-
+                  } 
                   setShowDeleteModal(false);
+                  setLoading(false); // <<< Ensures loading is false after API call (success or error)
                   setTaskToDelete(null);
-                }}
+                }} 
+
                 className="px-5 py-3 rounded-full bg-red-500 text-white text-sm shadow-md font-bold hover:brightness-110 transition duration-200"
               >
                 OK
@@ -593,6 +615,16 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+{loading && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-10 w-10 md:h-14 md:w-14 border-t-4 border-b-4 border-pink-500"></div>
+      <p className="mt-4 text-white text-sm md:text-lg font-semibold text-shadow-md">Loading...</p>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

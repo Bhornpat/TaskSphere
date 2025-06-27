@@ -11,7 +11,7 @@ class TokenResponse(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: constr(min_length=6, max_length=20)
+    password: constr(max_length=20)
 
     @validator('email')
     def normalize_email(cls, v):
@@ -21,6 +21,11 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+    
+    @validator('email')
+    def normalize_email(cls, v):
+        return v.lower()  # normalize before saving
+
 
 class TaskCreate(BaseModel):
     title: str

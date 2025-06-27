@@ -49,7 +49,7 @@ export default function Navbar() {
 					</button>
 
 					{open && (
-						<div className="absolute font-mono right-0 mt-2 w-35 bg-white text-black  rounded-lg shadow-lg z-50">
+						<div className="absolute font-mono right-0 mt-2 w-35 bg-white text-black hover:scale-105 transition text-shadow duration-300 rounded-lg shadow-lg z-50">
 							<button
 								onClick={handleLogout}
 								className="w-full font-mono px-4 py-2 text-left hover:rounded-lg hover:bg-gray-100"
