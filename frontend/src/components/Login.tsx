@@ -45,7 +45,7 @@ export default function Login() {
 			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
 			style={{ backgroundImage: "url('/your-star-background.jpg')" }} // update to your starry image path
 		>
-			<div className="bg-white/100 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-sm md:max-w-md mx-auto text-center space-y-6">
+			<div className="bg-white/100 z-10 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-sm md:max-w-md mx-auto text-center space-y-6">
 				<h2 className="text-2xl md:text-3xl font-bold font-mono text-gray-800">
 					Sign In <br /> <span className='text-sm font-medium text-gray-500'> Ready to Launch? </span>
 				</h2>

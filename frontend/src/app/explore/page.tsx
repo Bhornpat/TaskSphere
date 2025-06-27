@@ -10,7 +10,7 @@ export default function ExplorePage() {
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center"
       style={{ backgroundImage: "url('/milkyway-8190232_1920.jpg')" }}>
 
-      <div className="bg-black/80 text-white px-10 py-12 rounded-2xl max-w-[90vw] md:max-w-3xl text-center shadow-2xl ">
+      <div className="bg-black/80 z-10 text-white px-10 py-12 rounded-2xl max-w-[90vw] md:max-w-3xl text-center shadow-2xl ">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Explore the <span className="text-yellow-400">Galaxy</span>
         </h1>

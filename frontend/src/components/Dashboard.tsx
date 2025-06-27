@@ -125,7 +125,7 @@ export default function Dashboard() {
     <div className="p-6">
       {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-      <div className="px-6 pt-12 flex justify-center items-center">
+      <div className="px-6  pt-12 flex justify-center items-center">
         <button
           onClick={() => setShowModal(true)}
           className="my-12 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md text-shadow font-mono font-bold hover:brightness-110 transition duration-200"
@@ -136,7 +136,7 @@ export default function Dashboard() {
         {/* Sign-in Required Modal */}
         {showSignInModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50  flex items-center justify-center z-50">
-            <div className="bg-white px-7 py-7 md:px-12 md:py-9 rounded-lg shadow-lg text-center">
+            <div className="bg-white z-10 px-7 py-7 md:px-12 md:py-9 rounded-lg shadow-lg text-center">
               <h2 className="text-xl font-semibold mb-4 text-gray-800 font-mono">
                 Sign In Required
               </h2>
