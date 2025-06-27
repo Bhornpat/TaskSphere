@@ -85,6 +85,16 @@ export default function Login() {
 			className="w-screen h-screen flex items-center justify-center bg-cover bg-center"
 			style={{ backgroundImage: "url('/your-star-background.jpg')" }} // update to your starry image path
 		>
+
+{loading && (
+  <div className="fixed top-0 right-0 bottom-0 left-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+    <div className="flex flex-col items-center">
+      <div className="animate-spin rounded-full h-10 w-10 md:h-14 md:w-14 border-t-4 border-b-4 border-pink-500"></div>
+      <p className="mt-4 text-white text-sm md:text-lg font-semibold text-shadow-md">Loading...</p>
+    </div>
+  </div>
+)}
+
 			<div className="bg-white/100 z-10 backdrop-blur-md shadow-xl rounded-xl p-8 w-full max-w-sm md:max-w-md mx-auto text-center space-y-6">
 				<h2 className="text-2xl md:text-3xl font-bold font-mono text-gray-800">
 					Sign In <br /> <span className='text-sm font-medium text-gray-500'> Ready to Launch? </span>
@@ -97,15 +107,6 @@ export default function Login() {
 						{error}
 					</p>
 				)}
-
-{loading && (
-  <div className="fixed top-0 right-0 bottom-0 left-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div className="flex flex-col items-center">
-      <div className="animate-spin rounded-full h-10 w-10 md:h-14 md:w-14 border-t-4 border-b-4 border-pink-500"></div>
-      <p className="mt-4 text-white text-sm md:text-lg font-semibold text-shadow-md">Loading...</p>
-    </div>
-  </div>
-)}
 
 				<form onSubmit={handleSubmit} className="space-y-5 text-left">
 					<div>
