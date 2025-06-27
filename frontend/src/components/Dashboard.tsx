@@ -128,7 +128,7 @@ export default function Dashboard() {
       <div className="px-6  pt-12 flex justify-center items-center">
         <button
           onClick={() => setShowModal(true)}
-          className="my-12 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md text-shadow font-mono font-bold hover:brightness-110 transition duration-200"
+          className="my-12 z-10 px-6 py-4 my-6 rounded-2xl bg-gradient-to-br from-pink-600 via-red-500 to-yellow-500 text-white text-xl shadow-md text-shadow font-mono font-bold hover:brightness-110 transition duration-200"
         >
           Add Task Here
         </button>
@@ -149,7 +149,7 @@ export default function Dashboard() {
                 {/*                         Cancel */}
                 {/*                     </button> */}
                 <button
-                  className="px-4 py-2 md:px-5 md:py-2 rounded-full bg-red-500 text-white text-md md:text-lg shadow-md font-bold hover:brightness-110 transition text-shadow duration-200"
+                  className="px-4 py-2 z-20 md:px-5 md:py-2 rounded-full bg-red-500 text-white text-md md:text-lg shadow-md font-bold hover:brightness-110 transition text-shadow duration-200"
                   onClick={handleGoToSignIn}
                 >
                   Go to Sign In
@@ -160,7 +160,8 @@ export default function Dashboard() {
         )}
         {/*mobile toggle */}
       </div>
-      <div className="space-y-6 px-5 ">
+      
+      <div className="space-y-6 px-5">
         {tasks.map((task) => (
           <div
             key={task.id}
@@ -171,7 +172,7 @@ export default function Dashboard() {
             {/* Left side: content that expands */}
             <div className="relative flex-1 min-w-0 z-0">
               {/*title*/}
-              <div className="z-10 px-2 pt-5 pb-4">
+              <div className=" px-2 pt-5 pb-4">
                 <h2 className="font-mono text-lg sm:text-lg md:text-2xl font-bold pb-1 text-gray-800 break-words leading-relaxed max-w-full z-10">
                   {task.title}
                 </h2>

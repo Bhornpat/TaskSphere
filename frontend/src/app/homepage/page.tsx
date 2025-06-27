@@ -25,7 +25,7 @@ export default function HomePage() {
       <div className="bg-black/80 text-white px-8 py-10 md:px-16 md:py-16 rounded-3xl max-w-3xl md:max-w-6xl text-center space-y-8 shadow-2xl z-10 relative"> {/* Added z-10 and relative */}
 
         <div className='flex flex-col gap-5'>
-          <h1 className="text-2xl md:text-4xl max-w-xl md:max-w-5xl font-mono font-bold text-gray-100 ">
+          <h1 className="text-2xl md:text-4xl max-w-xl md:max-w-5xl  font-bold text-gray-100 ">
             <span >Ready to launch </span><br />
             <span className="text-yellow-400">
               <Typewriter
