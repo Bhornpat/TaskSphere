@@ -9,9 +9,11 @@
     "lint": "echo 'Linting temporarily skipped.'"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.18.1",
     "next": "15.3.2",
+    "ogl": "^1.0.11",
     "react": "^19.0.0",
     "react-datepicker": "^8.4.0",
     "react-dom": "^19.0.0",

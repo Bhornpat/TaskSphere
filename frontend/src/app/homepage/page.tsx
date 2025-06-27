@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Typewriter } from 'react-simple-typewriter'
 
 
+
 export default function HomePage() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
@@ -17,8 +18,11 @@ export default function HomePage() {
   };
 
   return (
-    <div className="w-full h-full bg-cover bg-center flex items-center justify-center" >
-      <div className="bg-black/80 text-white px-8 py-10 md:px-16 md:py-16 rounded-3xl max-w-3xl md:max-w-6xl text-center space-y-8 shadow-2xl">
+    // This outer div now acts as the main container for the page
+    <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
+        
+      {/* Your existing content card, make sure it has a higher z-index */}
+      <div className="bg-black/80 text-white px-8 py-10 md:px-16 md:py-16 rounded-3xl max-w-3xl md:max-w-6xl text-center space-y-8 shadow-2xl z-10 relative"> {/* Added z-10 and relative */}
 
         <div className='flex flex-col gap-5'>
           <h1 className="text-2xl md:text-4xl max-w-xl md:max-w-5xl font-mono font-bold text-gray-100 ">
@@ -37,8 +41,8 @@ export default function HomePage() {
           </h1>
         </div>
         {/* <p className="text-sm md:text-base text-gray-300 font-mono leading-looses"> */}
-        {/*   Organize your life<br /> */}
-        {/*   Conquer your tasks and rule your galaxy */}
+        {/* Organize your life<br /> */}
+        {/* Conquer your tasks and rule your galaxy */}
         {/* </p> */}
 
         {/* Auth Button */}
@@ -71,15 +75,18 @@ export default function HomePage() {
           >
             Explore the Galaxy
           </button>
+
+
         </div>
         {/* Sign In Modal */}
 
         {showModal && (
           <SignInModal onClose={() => setShowModal(false)} />
         )}
+
       </div>
-    </div >
+
+    </div>
+
   );
 }
-
-
